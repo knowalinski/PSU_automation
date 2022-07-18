@@ -1,14 +1,15 @@
-selecting channel
-INST OUT{channel number}
+Used SCPI commands:
 
-INST? return number of selected channel
+INST:NSEL {c_no} selecting channel
+OUTP:SEL {state} output state of selected channel
 
-INST:NSEL {c_no}
-INST:NSEL? returns c_no
+OUTP:GEN {state} main output state
+
+APPL {v}, {a}
 
 VOLT {v} setting voltage on selected channel
 
 CURR {a} setting output current
 
-APPL {v}, {a}
+
 

@@ -1,5 +1,6 @@
 from pyvisa import ResourceManager, constants
 import time
+import eel
 
 import os
 import random
@@ -32,15 +33,28 @@ def global_state(instrument, state):
     instrument.read('\n')
 
 
+def kill_all(id):
+    for i in range(4):
+        Channel(id, i + 1).state_switch(0)
+
+
 def main():
     with ResourceManager().open_resource("ASRL4::INSTR") as psu:
         ch1 = Channel(psu, 1)
         ch1.set_params(2, .5)
-        ch1.state_switch(1)
+        ch2 = Channel(psu, 2)
+        for i in range(4):
+            Channel(psu, i + 1).state_switch(1)
+            print(i)
+            time.sleep(1)
         global_state(psu, 1)
-        for i in range(61):
-            ch1.set_params(i/2, .5)
-            time.sleep(.5)
+        # for i in range(61):
+        #     ch1.set_params(i/2, .5)
+        #     ch2.set_params(i/4, .1)
+        #
+        #     time.sleep(.5)
+        time.sleep(.5)
+        kill_all(psu)
         time.sleep(5)
         global_state(psu, 0)
 
