@@ -1,0 +1,14 @@
+selecting channel
+INST OUT{channel number}
+
+INST? return number of selected channel
+
+INST:NSEL {c_no}
+INST:NSEL? returns c_no
+
+VOLT {v} setting voltage on selected channel
+
+CURR {a} setting output current
+
+APPL {v}, {a}
+
