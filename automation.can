@@ -1,0 +1,39 @@
+/*@!Encoding:1252*/
+includes
+{
+
+}
+
+variables
+{
+  byte enableOutput[4] = {'O','U','T','1'};
+  byte setVoltage[10] = {'V','S','E','T','1',':','1','2','.','0'};
+  msTimer send_delay;
+  int portNum = 1;
+}
+
+on start
+{
+
+if ( RS232Open(portNum) == 1 ) write("Port 1 has been opened.");
+RS232Configure(portNum,9600,8,1,0);
+if ( RS232Send(portNum,setVoltage,10) == 1) write("Voltage set to 12 V");
+setTimer(send_delay, 100);
+
+
+}
+
+on timer send_delay
+{
+  if ( RS232Send(portNum,enableOutput,4) ==  1) write("Turn on power Supply.");
+}
+
+on stopMeasurement
+{
+  byte buffer[4] = {'O','U','T','0'};
+
+  if ( 1==RS232Send(portNum,buffer,4) )
+   write("Turn off  power Supply.");
+
+  if ( 1==RS232Close(portNum) ) write("Port 1 has been closed.");
+}
