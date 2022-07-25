@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>jeśli to widzisz to może działam</title>
+		<title>potentially alive</title>
 		<style>
 			.interItems {
 				text-align: center;
@@ -11,13 +11,9 @@
 				display: flex;
 			    justify-content: center;
 			    align-items: center;
-			    height: 200px;
+			    height: 150px;
 			}
 			.onButton {
-				width: 10em;
-				height: 10em;
-			}
-			.offButton {
 				width: 10em;
 				height: 10em;
 			}
@@ -25,14 +21,49 @@
 	</head>
 	<body>
 		<div class='interItems'>
-			<h1>Wstałem lamusie. Zdziwiony?</h1>
-			<div class='interactiveButtons'>
-				<form action='#' method='POST'>
-					<button class='onButton' onclick="ledOn()" name="on" value="on">on</button>
-					<button class='offButton' onclick="ledOff()" name="off" value="off">off</button>
-				</form>
-			</div>
-			<button class='disconnectBtton' onclick="disconnect()" name="dis" value="dis">disconnect</button>
+			<h1>I'm alive!</h1>
+		</div>
+
+		<div class='interactiveButtons'>
+			<form action='#' method='POST'>
+				<button class='onButton' name="ch1" value="ch1">CH1<br>{{ch1_state}}</button>
+				<button class='onButton' name="ch2" value="ch2">CH2<br>{{ch2_state}}</button>
+				<button class='onButton' name="ch3" value="ch3">CH3<br>{{ch3_state}}</button>
+				<button class='onButton' name="ch4" value="ch4">CH4<br>{{ch4_state}}</button>
+				<button class='onButton' name="main" value="main">OUTPUT<br>{{out_state}}</button>
+			</form>
+		</div>
+
+		<div>
+			<form action='#' method='POST'>
+				<input type = "number" step = ".1" id = "CH1V" name = "ch1v" placeholder = "CH1 Voltage">
+				<input type = "number" step = ".1" id = "CH1A" name = "ch1a" placeholder = "CH1 Current">
+				<input type = "submit" value = "CH1 set">
+			</form>
+		</div>
+
+		<div>
+			<form action='#' method='POST'>
+				<input type = "number" step = ".1" id = "CH2V" name = "ch2v" placeholder = "CH2 Voltage">
+				<input type = "number" step = ".1" id = "CH2A" name = "ch2a" placeholder = "CH2 Current">
+				<input type = "submit" value = "CH2 set">
+			</form>
+		</div>
+
+		<div>
+			<form action='#' method='POST'>
+				<input type = "number" step = ".1" id = "CH3V" name = "ch3v" placeholder = "CH3 Voltage">
+				<input type = "number" step = ".1" id = "CH3A" name = "ch3a" placeholder = "CH3 Current">
+				<input type = "submit" value = "CH3 set">
+			</form>
+		</div>
+
+		<div>
+			<form action='#' method='POST'>
+				<input type = "number" step = ".1" id = "CH4V" name = "ch4v" placeholder = "CH4 Voltage">
+				<input type = "number" step = ".1" id = "CH4A" name = "ch4a" placeholder = "CH4 Current">
+				<input type = "submit" value = "CH4 set">
+			</form>
 		</div>
 	</body>
 </html>
