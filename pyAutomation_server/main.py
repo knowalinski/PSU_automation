@@ -13,7 +13,8 @@ app = Flask(__name__)
 # defining parameters of serial connection
 ser = serial.Serial()
 ser.baudrate = 9600
-ser.port = "COM4"
+ser.port = input("HMP4040 serial port: ").upper()
+# ser.port = "COM4"
 
 
 class Device:
@@ -143,9 +144,9 @@ def index():
         "CH3A": data["params"]["ch3"]["current"],
         "CH4V": data["params"]["ch4"]["voltage"],
         "CH4A": data["params"]["ch4"]["current"]}
-    return render_template('index.html', **states, )
+    return render_template('index.html', **states)
 
 
 if __name__ == "__main__":
-    app.run()
-    # app.run(host="0.0.0.0")
+    # app.run()
+    app.run(host="0.0.0.0")
