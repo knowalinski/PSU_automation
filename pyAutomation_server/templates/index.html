@@ -26,42 +26,42 @@
 
 		<div class='interactiveButtons'>
 			<form action='#' method='POST'>
-				<button class='onButton' name="ch1" value="ch1">CH1<br>{{ch1_state}}</button>
-				<button class='onButton' name="ch2" value="ch2">CH2<br>{{ch2_state}}</button>
-				<button class='onButton' name="ch3" value="ch3">CH3<br>{{ch3_state}}</button>
-				<button class='onButton' name="ch4" value="ch4">CH4<br>{{ch4_state}}</button>
-				<button class='onButton' name="main" value="main">OUTPUT<br>{{out_state}}</button>
+				<button class='onButton' name="ch1">CH1<br>{{ch1_state}}</button>
+				<button class='onButton' name="ch2">CH2<br>{{ch2_state}}</button>
+				<button class='onButton' name="ch3">CH3<br>{{ch3_state}}</button>
+				<button class='onButton' name="ch4">CH4<br>{{ch4_state}}</button>
+				<button class='onButton' name="main">OUTPUT<br>{{out_state}}</button>
 			</form>
 		</div>
 
 		<div>
 			<form action='#' method='POST'>
-				<input type = "number" step = ".1" id = "CH1V" name = "ch1v" placeholder = "CH1 Voltage">
-				<input type = "number" step = ".1" id = "CH1A" name = "ch1a" placeholder = "CH1 Current">
+				<input type = "number" step = ".1" id = "CH1V" name = "ch1v" value = "{{CH1V}}">
+				<input type = "number" step = ".1" id = "CH1A" name = "ch1a" value = "{{CH1A}}">
 				<input type = "submit" value = "CH1 set">
 			</form>
 		</div>
 
 		<div>
 			<form action='#' method='POST'>
-				<input type = "number" step = ".1" id = "CH2V" name = "ch2v" placeholder = "CH2 Voltage">
-				<input type = "number" step = ".1" id = "CH2A" name = "ch2a" placeholder = "CH2 Current">
+				<input type = "number" step = ".1" id = "CH2V" name = "ch2v" value = "{{CH2V}}">
+				<input type = "number" step = ".1" id = "CH2A" name = "ch2a" value = "{{CH2A}}">
 				<input type = "submit" value = "CH2 set">
 			</form>
 		</div>
 
 		<div>
 			<form action='#' method='POST'>
-				<input type = "number" step = ".1" id = "CH3V" name = "ch3v" placeholder = "CH3 Voltage">
-				<input type = "number" step = ".1" id = "CH3A" name = "ch3a" placeholder = "CH3 Current">
+				<input type = "number" step = ".1" id = "CH3V" name = "ch3v" value = "{{CH3V}}">
+				<input type = "number" step = ".1" id = "CH3A" name = "ch3a" value = "{{CH3A}}">
 				<input type = "submit" value = "CH3 set">
 			</form>
 		</div>
 
 		<div>
 			<form action='#' method='POST'>
-				<input type = "number" step = ".1" id = "CH4V" name = "ch4v" placeholder = "CH4 Voltage">
-				<input type = "number" step = ".1" id = "CH4A" name = "ch4a" placeholder = "CH4 Current">
+				<input type = "number" step = ".1" id = "CH4V" name = "ch4v" value = "{{CH4V}}">
+				<input type = "number" step = ".1" id = "CH4A" name = "ch4a" value = "{{CH4A}}">
 				<input type = "submit" value = "CH4 set">
 			</form>
 		</div>
