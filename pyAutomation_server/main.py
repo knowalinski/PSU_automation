@@ -4,59 +4,88 @@
 
 from flask import Flask, render_template, request
 import serial
-import time
-import json
+from operators.memory import Memory
+from operators.device import Device, Channel
 
 # creating instance of flask app
 app = Flask(__name__)
 
 # defining parameters of serial connection
 ser = serial.Serial()
-ser.baudrate = 9600
+# ser.baudrate = 9600
+ser.baudrate = 19200
 ser.port = input("HMP4040 serial port: ").upper()
+
 # ser.port = "COM4"
 
 
-class Device:
-    def __init__(self, serial_id):
-        self.serial_id = serial_id
-        self.switch = 0
+# class Device:
+#     def __init__(self, serial_id):
+#         self.serial_id = serial_id
+#         self.switch = 0
+#
+#     def override_switch(self, new_switch):
+#         self.switch = new_switch
+#
+#     def switch_state(self):
+#         return 0 if self.switch == 1 else 1
+#
+#     def state_command(self):
+#         self.switch = self.switch_state()
+#         return f"OUTP:GEN {self.switch}\n"
+#
+#     def set_state(self):
+#         self.serial_id.open()
+#         time.sleep(.015)
+#         self.serial_id.write(self.state_command().encode())
+#         time.sleep(.015)
+#         self.serial_id.close()
+#
+#
+# class Channel(Device):
+#     def __init__(self, channel_id, serial_id):
+#         super().__init__(serial_id)
+#         self.channel_id = channel_id
+#
+#     def set_params(self, voltage, current):
+#         self.serial_id.open()
+#         time.sleep(.015)
+#         self.serial_id.write(f"INST:NSEL {self.channel_id}\nAPPL {voltage}, {current}\n".encode())
+#         time.sleep(.015)
+#         self.serial_id.close()
+#
+#     def state_command(self):
+#         self.switch = self.switch_state()
+#         return f"INST:NSEL {self.channel_id}\nOUTP:SEL {self.switch}\n"
 
-    def override_switch(self, new_switch):
-        self.switch = new_switch
 
-    def switch_state(self):
-        return 0 if self.switch == 1 else 1
-
-    def state_command(self):
-        self.switch = self.switch_state()
-        return f"OUTP:GEN {self.switch}\n"
-
-    def set_state(self):
-        self.serial_id.open()
-        time.sleep(.015)
-        self.serial_id.write(self.state_command().encode())
-        time.sleep(.015)
-        self.serial_id.close()
-
-
-class Channel(Device):
-    def __init__(self, channel_id, serial_id):
-        super().__init__(serial_id)
-        self.channel_id = channel_id
-
-    def set_params(self, voltage, current):
-        self.serial_id.open()
-        time.sleep(.015)
-        self.serial_id.write(f"INST:NSEL {self.channel_id}\nAPPL {voltage}, {current}\n".encode())
-        time.sleep(.015)
-        self.serial_id.close()
-
-    def state_command(self):
-        self.switch = self.switch_state()
-        return f"INST:NSEL {self.channel_id}\nOUTP:SEL {self.switch}\n"
+# class Memory:
+#     def __init__(self, file_name):
+#         self.file_name = file_name
+#         with open(self.file_name, "r") as f:
+#             self.data = json.load(f)
+#
+#     def get_data(self):
+#         with open(self.file_name, "r") as f:
+#             self.data = json.load(f)
+#
+#     def update(self):
+#         with open(self.file_name, "w") as f:
+#             json.dump(self.data, f, indent=4, sort_keys=True)
+#
+#     def update_states(self, channel, value):
+#         self.get_data()
+#         self.data["states"][channel] = value
+#         self.update()
+#
+#     def update_params(self, channel, voltage, current):
+#         self.get_data()
+#         self.data["params"][channel]["voltage"] = voltage
+#         self.data["params"][channel]["current"] = current
+#         self.update()
 
 
+memory = Memory("data.json")
 ch1 = Channel(1, ser)
 ch2 = Channel(2, ser)
 ch3 = Channel(3, ser)
@@ -65,71 +94,62 @@ general = Device(ser)
 channels = {"ch1": ch1, "ch2": ch2, "ch3": ch3, "ch4": ch4, "general": general}
 
 
-with open("data.json", "r") as f:
-    data = json.load(f)
+def on_startup():
+    memory.get_data()
     for key in channels:
         channels[key].override_switch(1)
         channels[key].set_state()
+        memory.data["states"][key] = 0
+        # data["states"][key] = 0
+    memory.update()
 
 
-def update_state(file, channel, value):
-    dat = json.load(file)
-    dat["states"][channel] = value
-    with open("data.json", "w") as json_file:
-        json.dump(dat, json_file, indent=4, sort_keys=True)
-
-
-def state_analise(file):
+def state_analise():
     if 'ch1' in request.form.to_dict():
         ch1.set_state()
-        update_state(file, "ch1", ch1.switch)
+        memory.update_states("ch1", ch1.switch)
     if 'ch2' in request.form.to_dict():
         ch2.set_state()
-        update_state(file, "ch2", ch2.switch)
+        memory.update_states("ch2", ch2.switch)
     if 'ch3' in request.form.to_dict():
         ch3.set_state()
-        update_state(file, "ch3", ch3.switch)
+        memory.update_states("ch3", ch3.switch)
     if 'ch4' in request.form.to_dict():
         ch4.set_state()
-        update_state(file, "ch4", ch4.switch)
+        memory.update_states("ch4", ch4.switch)
     if 'main' in request.form.to_dict():
         general.set_state()
-        update_state(file, "general", general.switch)
+        memory.update_states("general", general.switch)
 
 
-def update_params(file, channel, voltage, current):
-    dat = json.load(file)
-    dat["params"][channel]["voltage"] = voltage
-    dat["params"][channel]["current"] = current
-    with open("data.json", "w") as json_file:
-        json.dump(dat, json_file, indent=4, sort_keys=True)
-
-
-def params_analise(file):
+def params_analise():
     params = request.form.to_dict().values()
     if 'ch1v' in request.form.to_dict():
         ch1.set_params(*params)
-        update_params(file, "ch1", *params)
+        memory.update_params("ch1", *params)
     if 'ch2v' in request.form.to_dict():
         ch2.set_params(*params)
-        update_params(file, "ch2", *params)
+        memory.update_params("ch2", *params)
     if 'ch3v' in request.form.to_dict():
         ch3.set_params(*params)
-        update_params(file, "ch3", *params)
+        memory.update_params("ch3", *params)
     if 'ch4v' in request.form.to_dict():
         ch4.set_params(*params)
-        update_params(file, "ch4", *params)
+        memory.update_params("ch4", *params)
+
+
+on_startup()
 
 
 @app.route("/", methods=['GET', 'POST', 'PUT'])
 def index():
     if request.method == 'POST':
         print(request.form.to_dict())
-        with open("data.json", "r") as file:
-            state_analise(file)
-            params_analise(file)
-    with open("data.json", "r") as file:
-        data = json.load(file)
+        # with open("data.json", "r") as file:
+        state_analise()
+        params_analise()
+    memory.get_data()
+    data = memory.data
     states = {
         "ch1_state": data["states"]["ch1"],
         "ch2_state": data["states"]["ch2"],
