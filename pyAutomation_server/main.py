@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
+from waitress import serve
 import serial
 from operators.memory import Memory
 from operators.device import Device, Channel
 from operators.request_handler import RequestHandler, pass_data
 
 app = Flask(__name__)
-
 # setting up serial connection parameters
 ser = serial.Serial()
 ser.baudrate = 9600
@@ -56,6 +56,10 @@ def automation():
 
 if __name__ == "__main__":
     # app.run()
-    app.run(host="0.0.0.0")
+    print("test")
+    serve(app, host="0.0.0.0", threads=1)
+
+    # app.run(host="0.0.0.0")
     # clearing states when server turned off
     memory.clear_states(channels)
+
