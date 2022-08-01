@@ -2,7 +2,7 @@ import json
 import time
 from threading import Thread
 import requests
-post_url = "http://127.0.0.1:5000"
+post_url = "http://127.0.0.1:8080"
 get_url = post_url + "/automation"
 
 
@@ -27,6 +27,7 @@ class Channel:
 def poke_server():
     while True:
         requests.post(post_url, data={})
+        print("Server poked")
         time.sleep(120)
 
 
