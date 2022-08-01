@@ -1,4 +1,5 @@
 import json
+from termcolor import colored
 
 
 class Memory:
@@ -41,4 +42,4 @@ class Memory:
             channels[key].override_switch(1)
             channels[key].set_state()
             self.data["states"][key] = 0
-        print("STATES CLEARED")
+        print(colored("\n STATES CLEARED \n\n",'green', attrs=['reverse']))
