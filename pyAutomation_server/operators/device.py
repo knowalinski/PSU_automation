@@ -18,7 +18,7 @@ class Device:
         return f"OUTP:GEN {self.switch}\n"
 
     def _serial_handler(body):
-        # decorator preventing PSU timeouts
+        # the sole purpose of this decorator is to prevent PSU timeouts
         def wrapper(self, *arg, **kw):
             self.serial_id.open()
             time.sleep(.015)

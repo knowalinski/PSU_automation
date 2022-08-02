@@ -2,6 +2,15 @@ import json
 from termcolor import colored
 
 
+def import_config():
+    # it is just for reading config.txt data
+    with open("config.txt", "r") as f:
+        config = json.load(f)
+    serial_port = config["serial_port"].upper()
+    baudrate = int(config["baudrate"])
+    return [serial_port, baudrate]
+
+
 class Memory:
     def __init__(self, file_name):
         self.file_name = file_name
@@ -23,6 +32,7 @@ class Memory:
             self.get_data()
             body(self, *arg, **kw)
             self.update()
+
         return wrapper
 
     @_get_update
@@ -38,8 +48,9 @@ class Memory:
 
     @_get_update
     def clear_states(self, channels):
+        # clearing states of PSU outputs (state of each output is set to 0)
         for key in channels:
             channels[key].override_switch(1)
             channels[key].set_state()
             self.data["states"][key] = 0
-        print(colored("\n STATES CLEARED \n\n",'green', attrs=['reverse']))
+        print(colored("\n STATES CLEARED \n\n", 'green', attrs=['reverse']))

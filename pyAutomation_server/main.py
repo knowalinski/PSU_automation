@@ -3,22 +3,30 @@ from waitress import serve
 from termcolor import colored
 import serial
 import time
-from operators.memory import Memory
+from operators.memory import Memory, import_config
 from operators.device import Device, Channel
 from operators.request_handler import RequestHandler, pass_data
 import os
+
+'''This is the server side of PSU automation. It is responsible for generating a webGUI and processing queries into 
+commands understood by the PSU (SCPI protocol) '''
+
+# it just makes log window look fancy
 os.system('color')
+
 app = Flask(__name__)
+
 # setting up serial connection parameters
+serial_params = import_config()
 ser = serial.Serial()
-ser.baudrate = 9600
-# ser.baudrate = 19200
+ser.baudrate = serial_params[1]
+print(serial_params)
 while True:
     try:
-        ser.port = input("HMP4040 serial port: ").upper()
+        ser.port = serial_params[0]
         ser.open()
     except serial.SerialException:
-        print(colored("Wrong port - try again", 'red'))
+        print(colored("Wrong port - edit config.txt and restart program", 'red'))
     else:
         ser.close()
         break
@@ -40,8 +48,8 @@ memory.clear_states(channels)
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        print("method: ", colored("POST", "green"), f" on time: {time.ctime()}")
-        print(colored(request.form.to_dict(), 'white'))
+        print("method: ", colored("[POST]", "green"), f" on time: [{time.ctime()}]")
+        print(colored(request.form.to_dict(), 'magenta'))
         # Processing posted data and updating .json file
         handler.state_setter(request.form.to_dict(), memory)
         handler.params_setter(request.form.to_dict(), memory)
@@ -49,21 +57,24 @@ def index():
         # return below prevents from errors caused by resubmitting form
         return redirect(url_for('index'))
     if request.method == "GET":
-        print("method: ", colored("GET", "cyan"), f" on time: {time.ctime()}")
+        print("method: ", colored("[GET]", "cyan"), f" on time: [{time.ctime()}]")
     # return below renders web interface
     return render_template('index.html', **pass_data(memory.data))
 
 
 @app.route("/automation", methods=['GET', 'POST'])
 def automation():
+    # this route is used as a place from which the client downloads data
     if request.method == "GET":
-        print("method: ", colored("GET", "cyan"), f" on time: {time.ctime()}")
+        print("method: ", colored("[GET]", "cyan"), f" on time: [{time.ctime()}]")
         return jsonify(memory.data)
 
 
 if __name__ == "__main__":
-    # app.run()
+    # waitress server - it works stably unlike the one from Flask
     serve(app, host="0.0.0.0", threads=2)
+    # app.run()
     # app.run(host="0.0.0.0")
+
     # clearing states when server turned off
     memory.clear_states(channels)

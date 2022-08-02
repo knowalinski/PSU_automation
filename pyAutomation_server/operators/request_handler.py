@@ -1,4 +1,5 @@
 def pass_data(data):
+    # this function creates variables that are passed to .html form
     states = {
         "ch1_state": data["states"]["ch1"],
         "ch2_state": data["states"]["ch2"],
@@ -17,6 +18,8 @@ def pass_data(data):
 
 
 class RequestHandler:
+    # this class is for converting and transferring data from requests
+
     def __init__(self, channels):
         self.channels = list(channels.values())
 
