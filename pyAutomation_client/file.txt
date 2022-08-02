@@ -1,0 +1,3 @@
+{"channel": "1",
+  "state": "1",
+  "params":{"voltage": "0", "current": "5"}}

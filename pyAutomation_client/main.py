@@ -2,8 +2,19 @@ import json
 import time
 from threading import Thread
 import requests
-post_url = "http://127.0.0.1:8080"
+
+'''The purpose of this program is to connect CANoe to the server that controls PSU'''
+
+# loading url of service from separate file - allows user to edit configuration
+with open("config.txt", "r") as f:
+    config = json.load(f)
+post_url = config["url"]
 get_url = post_url + "/automation"
+
+# this is only for testing
+with open("file.txt", "r") as f:
+    data = json.load(f)
+    data_check = data
 
 
 class Channel:
@@ -25,19 +36,21 @@ class Channel:
 
 
 def poke_server():
+    # this function is for generating fake traffic. It prevents server from timing out.
     while True:
         requests.post(post_url, data={})
         print("Server poked")
-        time.sleep(120)
+        time.sleep(300)
 
 
 def data_sender():
+    global data_check
 
-    data_check = {}
     while True:
-        time.sleep(.1)
+        # sleep() below prevents script from generating significant CPU load
+        time.sleep(.01)
         try:
-            with open("capl_data.json", "r") as f:
+            with open("file.txt", "r") as f:
                 data = json.load(f)
         except json.decoder.JSONDecodeError:
             pass
@@ -47,12 +60,13 @@ def data_sender():
                 response = requests.get(get_url).json()
                 requests.post(post_url, data=ch.params_response())
                 if int(response['states'][f"ch{data['channel']}"]) != int(data['state']):
-                    # if real state of channel isn't equal to state given from capl change state
+                    # if real state of channel isn't equal to state given from capl - change state
                     requests.post(post_url, data=ch.state_response())
                 data_check = data
 
 
 def main():
+    # creating threads allows to run data_sender() and poke_server() in the same script
     poke_thread = Thread(target=poke_server)
     sender_thread = Thread(target=data_sender)
     sender_thread.start()
@@ -60,6 +74,4 @@ def main():
 
 
 if __name__ == "__main__":
-    print("i'm alive")
     main()
-    # pass
