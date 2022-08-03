@@ -2,7 +2,7 @@
     "params": {
         "ch1": {
             "current": "5",
-            "voltage": "0"
+            "voltage": "4"
         },
         "ch2": {
             "current": "1",
