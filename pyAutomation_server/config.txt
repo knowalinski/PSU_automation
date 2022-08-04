@@ -1,1 +1,1 @@
-{"serial_port": "com3","baudrate": "9600"}
+{"serial_port": "com4","baudrate": "9600"}

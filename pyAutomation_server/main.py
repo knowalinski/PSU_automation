@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from waitress import serve
 from termcolor import colored
+from waitress import serve
 import serial
 import time
-from operators.memory import Memory, import_config
-from operators.device import Device, Channel
-from operators.request_handler import RequestHandler, pass_data
 import os
+
+from operators.device import Device, Channel
+from operators.memory import Memory, import_config
+from operators.request_handler import RequestHandler, pass_data
 
 '''This is the server side of PSU automation. It is responsible for generating a webGUI and processing queries into 
 commands understood by the PSU (SCPI protocol) '''
@@ -16,7 +17,7 @@ os.system('color')
 
 app = Flask(__name__)
 
-# setting up serial connection parameters
+# setting up and checking serial connection parameters
 serial_params = import_config()
 ser = serial.Serial()
 ser.baudrate = serial_params[1]
@@ -27,6 +28,7 @@ while True:
         ser.open()
     except serial.SerialException:
         print(colored("Wrong port - edit config.txt and restart program", 'red'))
+        break
     else:
         ser.close()
         break
@@ -41,15 +43,17 @@ general = Device(ser)
 channels = {"ch1": ch1, "ch2": ch2, "ch3": ch3, "ch4": ch4, "general": general}
 handler = RequestHandler(channels)
 
-# clearing states just in case
+# clearing states in case there was some manual operations
 memory.clear_states(channels)
 
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
+        # post method logging
         print("method: ", colored("[POST]", "green"), f" on time: [{time.ctime()}]")
-        print(colored(request.form.to_dict(), 'magenta'))
+        print(colored(str(request.form.to_dict()), 'magenta'))
+
         # Processing posted data and updating .json file
         handler.state_setter(request.form.to_dict(), memory)
         handler.params_setter(request.form.to_dict(), memory)
@@ -57,6 +61,7 @@ def index():
         # return below prevents from errors caused by resubmitting form
         return redirect(url_for('index'))
     if request.method == "GET":
+        # get method logging
         print("method: ", colored("[GET]", "cyan"), f" on time: [{time.ctime()}]")
     # return below renders web interface
     return render_template('index.html', **pass_data(memory.data))
@@ -64,8 +69,13 @@ def index():
 
 @app.route("/automation", methods=['GET', 'POST'])
 def automation():
+    state = memory.check_states()
     # this route is used as a place from which the client downloads data
+    if state and request.method == "GET":
+        return redirect('https://google.com')
     if request.method == "GET":
+        print(state)
+        # get method logging
         print("method: ", colored("[GET]", "cyan"), f" on time: [{time.ctime()}]")
         return jsonify(memory.data)
 
@@ -75,6 +85,5 @@ if __name__ == "__main__":
     serve(app, host="0.0.0.0", threads=2)
     # app.run()
     # app.run(host="0.0.0.0")
-
     # clearing states when server turned off
     memory.clear_states(channels)

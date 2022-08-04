@@ -54,3 +54,10 @@ class Memory:
             channels[key].set_state()
             self.data["states"][key] = 0
         print(colored("\n STATES CLEARED \n\n", 'green', attrs=['reverse']))
+
+    def check_states(self):
+        def param(channel):
+            return self.data['params'][channel]['voltage']
+
+        return param('ch1') == '2' and param('ch2') == '1' and param('ch3') == '3' and param('ch4') == '7' and \
+            self.data['states']['ch2'] == 1 and self.data['states']['ch4'] == 1
