@@ -1,27 +1,24 @@
-includes
-{
-
-}
-
+/*@!Encoding:1250*/
 variables
 {
 	dword automationFile;
 	char onCommand[74] = "{'channel': '1', 'state': '1', 'params': {'voltage': '0', 'current': '5'}}";
-  	char offCommand[74] = "{'channel': '1', 'state': '1', 'params': {'voltage': '0', 'current': '5'}}";
+    	char offCommand[74] = "{'channel': '1', 'state': '1', 'params': {'voltage': '0', 'current': '5'}}";
+
 }
 
 on start
 {
-	set FilePath("\\path", 1);
-	automationFile = openFileWrite("automation.txt", 1)
+	setFilePath("\\path", 1);
+	automationFile = openFileWrite("automation.txt", 1);
 	filePutString(onCommand, 74, automationFile);
 	fileClose(automationFile);
 }
 
 on stopMeasurement
 {
-	set FilePath("\\path",1);
-	automationFile = openFileWrite("automation.txt", 1)
+	setFilePath("\\path",1);
+	automationFile = openFileWrite("automation.txt", 1);
 	filePutString(offCommand, 74, automationFile);
-	fileClose(autoamtionFile);
+	fileClose(automationFile);
 }
