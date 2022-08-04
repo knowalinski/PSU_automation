@@ -2,23 +2,23 @@
 variables
 {
 	dword automationFile;
-	char onCommand[74] = "{'channel': '1', 'state': '1', 'params': {'voltage': '0', 'current': '5'}}";
-    	char offCommand[74] = "{'channel': '1', 'state': '1', 'params': {'voltage': '0', 'current': '5'}}";
+	char onCommand[81] = "{\"channel\": \"2\", \"state\": \"1\", \"params\": {\"voltage\": \"24.0\", \"current\": \"06.0\"}}";
+  char offCommand[81] = "{\"channel\": \"2\", \"state\": \"0\", \"params\": {\"voltage\": \"24.0\", \"current\": \"06.0\"}}";
 
 }
 
 on start
 {
-	setFilePath("\\path", 1);
-	automationFile = openFileWrite("automation.txt", 1);
-	filePutString(onCommand, 74, automationFile);
+	setFilePath("C:\\client", 1);
+	automationFile = openFileWrite("capl_input.txt", 1);
+	filePutString(onCommand, 81, automationFile);
 	fileClose(automationFile);
 }
 
 on stopMeasurement
 {
-	setFilePath("\\path",1);
-	automationFile = openFileWrite("automation.txt", 1);
-	filePutString(offCommand, 74, automationFile);
+	setFilePath("C:\\client",1);
+	automationFile = openFileWrite("capl_input.txt", 1);
+	filePutString(offCommand, 81, automationFile);
 	fileClose(automationFile);
 }
