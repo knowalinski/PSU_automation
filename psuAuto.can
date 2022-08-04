@@ -1,9 +1,13 @@
+includes
+{
+
+}
+
 variables
 {
 	dword automationFile;
 	char onCommand[74] = "{'channel': '1', 'state': '1', 'params': {'voltage': '0', 'current': '5'}}";
-  char offCommand[74] = "{'channel': '1', 'state': '1', 'params': {'voltage': '0', 'current': '5'}}";
-
+  	char offCommand[74] = "{'channel': '1', 'state': '1', 'params': {'voltage': '0', 'current': '5'}}";
 }
 
 on start
