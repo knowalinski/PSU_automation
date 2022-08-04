@@ -6,15 +6,15 @@ import requests
 '''The purpose of this program is to connect CANoe to the server that controls PSU'''
 
 # loading url of service from separate file - allows user to edit configuration
-with open("config.txt", "r") as f:
-    config = json.load(f)
+with open("config.txt", "r") as file:
+    config = json.load(file)
 post_url = config["url"]
 get_url = post_url + "/automation"
 
-# this is only for testing
-with open("file.txt", "r") as f:
-    data = json.load(f)
-    data_check = data
+# loading previous dataset from file - prevents from unintentional state changing after reset
+with open("capl_input.txt", "r") as file:
+    init_data = json.load(file)
+    data_check = init_data
 
 
 class Channel:
@@ -24,13 +24,15 @@ class Channel:
         self.voltage = 0
         self.current = 0
 
-    def params_response(self):
+    def params_request(self):
+        # create server request for setting up selected channel parameters
         self.channel = self.json_data["channel"]
         self.voltage = self.json_data["params"]["voltage"]
         self.current = self.json_data["params"]["current"]
         return {f"ch{self.channel}v": f"{self.voltage}", f"ch{self.channel}a": f"{self.current}"}
 
-    def state_response(self):
+    def state_request(self):
+        # create server request for changing state of selected channel
         self.channel = self.json_data["channel"]
         return {f"ch{self.channel}": ""}
 
@@ -50,7 +52,7 @@ def data_sender():
         # sleep() below prevents script from generating significant CPU load
         time.sleep(.01)
         try:
-            with open("file.txt", "r") as f:
+            with open("capl_input.txt", "r") as f:
                 data = json.load(f)
         except json.decoder.JSONDecodeError:
             pass
@@ -58,10 +60,12 @@ def data_sender():
             ch = Channel(data)
             if data_check != data:
                 response = requests.get(get_url).json()
-                requests.post(post_url, data=ch.params_response())
+                print(f"Params sent: {ch.params_request()}")
+                requests.post(post_url, data=ch.params_request())
                 if int(response['states'][f"ch{data['channel']}"]) != int(data['state']):
                     # if real state of channel isn't equal to state given from capl - change state
-                    requests.post(post_url, data=ch.state_response())
+                    print(f"Status sent: {ch.state_request()}")
+                    requests.post(post_url, data=ch.state_request())
                 data_check = data
 
 
