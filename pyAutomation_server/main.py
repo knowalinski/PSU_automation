@@ -45,6 +45,7 @@ handler = RequestHandler(channels)
 
 # clearing states in case there was some manual operations
 memory.clear_states(channels)
+memory.set_output(general)
 
 
 @app.route("/", methods=['GET', 'POST'])

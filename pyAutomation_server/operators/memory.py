@@ -55,6 +55,12 @@ class Memory:
             self.data["states"][key] = 0
         print(colored("\n STATES CLEARED \n\n", 'green', attrs=['reverse']))
 
+    @_get_update
+    def set_output(self, channel):
+        channel.override_switch(0)
+        channel.set_state()
+        self.data["states"]["general"] = 1
+
     def check_states(self):
         def param(channel):
             return self.data['params'][channel]['voltage']
