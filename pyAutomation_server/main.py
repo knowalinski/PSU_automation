@@ -73,7 +73,7 @@ def automation():
     state = memory.check_states()
     # this route is used as a place from which the client downloads data
     if state and request.method == "GET":
-        return redirect('https://google.com')
+        return render_template('_test.html')
     if request.method == "GET":
         print(state)
         # get method logging
