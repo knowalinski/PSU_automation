@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>potentially alive</title>
+		<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
+	</head>
+	<body>
+
+		<div class='interItems'>
+			<h1>ReMoTe4040</h1>
+		</div>
+
+		<div class='buttonsPosition'>
+			<form action='#' method='POST'>
+				<button id = 'ch1' class='offButton' name="ch1">CH1<br>{{ch1_state}}</button>
+				<button id = 'ch2' class='offButton' name="ch2">CH2<br>{{ch2_state}}</button>
+				<button id = 'ch3' class='offButton' name="ch3">CH3<br>{{ch3_state}}</button>
+				<button id = 'ch4' class='offButton' name="ch4">CH4<br>{{ch4_state}}</button>
+				<button id = 'out' class='offOutput' name="main">OUTPUT<br>{{out_state}}</button>
+			</form>
+		</div>
+
+		<script>
+			if({{ch1_state}} == 1){
+				document.getElementById("ch1").className = "onButton";
+			}
+			if({{ch2_state}} == 1){
+				document.getElementById("ch2").className = "onButton";
+			}
+			if({{ch3_state}} == 1){
+				document.getElementById("ch3").className = "onButton";
+			}
+			if({{ch4_state}} == 1){
+				document.getElementById("ch4").className = "onButton";
+			}
+			if({{out_state}} == 1){
+				document.getElementById("out").className = "onOutput";
+			}
+		</script>
+
+		<div class = 'inputPosition'>
+			<div class = 'row'>
+				<div class = 'inputBorder'>
+					<div class = 'inputMod'>
+						<form action='#' method='POST'>
+							<label class = "labelMod" for = "CH3V">Voltage:</label>
+							<input class = "inputsMod" type = "number" step = ".1" id = "CH1V" name = "ch1v" value = "{{CH1V}}"><br>
+							<label class = "labelMod" for = "CH3A">Current:</label>
+							<input class = "inputsMod" type = "number" step = ".1" id = "CH1A" name = "ch1a" value = "{{CH1A}}"><br>
+							<input class = "submitMod" type = "submit" value = "CH1 set">
+						</form>
+					</div>
+				</div>
+
+				<div class = 'inputBorder'>
+					<div class = 'inputMod'>
+						<form action='#' method='POST'>
+							<label class = "labelMod" for = "CH2V">Voltage:</label>
+							<input class = "inputsMod" type = "number" step = ".1" id = "CH2V" name = "ch2v" value = "{{CH2V}}"><br>
+							<label class = "labelMod" for = "CH2A">Current:</label>
+							<input class = "inputsMod" type = "number" step = ".1" id = "CH2A" name = "ch2a" value = "{{CH2A}}"><br>
+							<input class = "submitMod" type = "submit" value = "CH2 set">
+						</form>
+					</div>
+				</div>
+
+				<div class = 'inputBorder'>
+					<div class = 'inputMod'>
+						<form action='#' method='POST'>
+							<label class = "labelMod" for = "CH3V">Voltage:</label>
+							<input class = "inputsMod" type = "number" step = ".1" id = "CH3V" name = "ch3v" value = "{{CH3V}}"><br>
+							<label class = "labelMod" for = "CH3A">Current:</label>
+							<input class = "inputsMod" type = "number" step = ".1" id = "CH3A" name = "ch3a" value = "{{CH3A}}"><br>
+							<input class = "submitMod" type = "submit" value = "CH3 set">
+						</form>
+					</div>
+				</div>
+
+				<div class = 'inputBorder'>
+					<div class = 'inputMod'>
+						<form action='#' method='POST'>
+							<label class = "labelMod" for = "CH3V">Voltage:</label>
+							<input class = "inputsMod" type = "number" step = ".1" id = "CH4V" name = "ch4v" value = "{{CH4V}}"><br>
+							<label class = "labelMod" for = "CH3A">Current:</label>
+							<input class = "inputsMod" type = "number" step = ".1" id = "CH4A" name = "ch4a" value = "{{CH4A}}"><br>
+							<input class = "submitMod" type = "submit" value = "CH4 set">
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<label class = "labelMod" >graphic design in my passion.</label>
+	</body>
+</html>
